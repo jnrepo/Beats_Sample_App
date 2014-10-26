@@ -17,18 +17,18 @@ import challenge.beats.joon.services.R;
 import challenge.beats.joon.services.VolleySingleton;
 import challenge.beats.joon.models.Album;
 
-public class LazyAdapter extends BaseAdapter {
+public class ListAdapter extends BaseAdapter {
     
     private Activity activity;
-    private  ArrayList<Album> albums;
+    private ArrayList<Album> albums;
     private static LayoutInflater inflater=null;
     private ImageLoader imageLoader = VolleySingleton.getInstance().getImageLoader();
 
     private int maxTitleLength = 75;
     
-    public LazyAdapter(Activity a, ArrayList<Album> d) {
-        activity = a;
-        albums =d;
+    public ListAdapter(Activity a, ArrayList<Album> d) {
+        this.activity = a;
+        this.albums =d;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -63,7 +63,9 @@ public class LazyAdapter extends BaseAdapter {
     }
 
     /**
-     * If the title's longer than 150 characters (up to dev's discretion), we truncate the title for aesthetics
+     * If the title's longer than 'maxTitleLength' characters (up to dev's discretion), we truncate the title for aesthetics
+     *
+     * TODO, truncate differently for portrait orientation?, maybe by the difference in ratio of width vs height
      *
      * @param title (String): the title of the album
      * @return (String): either the original title, or truncated title

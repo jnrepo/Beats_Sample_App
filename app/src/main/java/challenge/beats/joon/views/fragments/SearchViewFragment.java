@@ -8,10 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import challenge.beats.joon.models.adapters.LazyAdapter;
+import challenge.beats.joon.models.adapters.ListAdapter;
 
 import java.util.ArrayList;
 
@@ -46,7 +45,7 @@ public class SearchViewFragment extends Fragment implements AbsListView.OnItemCl
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private android.widget.ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
     public static SearchViewFragment newInstance(String param1, String param2) {
@@ -75,7 +74,7 @@ public class SearchViewFragment extends Fragment implements AbsListView.OnItemCl
         }
 
         // TODO: Change Adapter to display your content
-        mAdapter = new LazyAdapter(getActivity(), albums);
+        mAdapter = new ListAdapter(getActivity(), albums);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class SearchViewFragment extends Fragment implements AbsListView.OnItemCl
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        ((AdapterView<android.widget.ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
