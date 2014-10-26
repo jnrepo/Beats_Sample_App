@@ -79,12 +79,17 @@ public class SearchService extends Service {
                 if (response.has("data")) {
                     JSONArray albums_json = response.getJSONArray("data");
                     Log.i(TAG, "albums: " + albums_json);
-                    for(int i = 0; i < albums_json.length(); i++) {
-                        JSONObject a = albums_json.getJSONObject(i);
-                        result.add(new Album(a.getString("id"), a.getString("result_type"), a.getString("detail"), a.getString("display"), a.getString("type"), a.getJSONObject("related")));
 
+                    // unroll!
+                    for(int i = 0; i < albums_json.length(); i+=5) {
+                        createAlbum(result, albums_json, i);
+                        createAlbum(result, albums_json, i + 1);
+                        createAlbum(result, albums_json, i + 2);
+                        createAlbum(result, albums_json, i + 3);
+                        createAlbum(result, albums_json, i + 4);
                     }
 
+                    // unroll the loop
                     for(int x = 0; x < result.size(); x+=5) {
                         getAlbumArt(result, x);
                         getAlbumArt(result, x + 1);
@@ -123,7 +128,7 @@ public class SearchService extends Service {
      * @param index (int): index of the album we want to access in the album list
      */
     public void getAlbumArt(final ArrayList<Album> a, final int index) {
-        // check to see we don't call an element that doesn't exist in the array
+        // check to see we don't call an element that's outOfBounds
         if (index < a.size()) {
             final Album content = a.get(index);
             StringBuilder url = new StringBuilder(ALBUM_ART_BASE)
@@ -133,6 +138,13 @@ public class SearchService extends Service {
             Log.i(TAG, "Request URL for album art: " + url);
             content.setAlbumArtUrl(url.toString());
 
+        }
+    }
+
+    public void createAlbum(ArrayList<Album> album_result, JSONArray album_response, int index) throws JSONException {
+        // check to see we don't call an element that's outOfBounds
+        if (index < album_response.length()) {
+            album_result.add(new Album(album_response.getJSONObject(index)));
         }
     }
 

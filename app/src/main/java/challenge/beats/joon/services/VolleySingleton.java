@@ -25,6 +25,7 @@ public class VolleySingleton {
                 return mCache.get(url);
             }
         });
+
     }
 
     public static VolleySingleton getInstance(){

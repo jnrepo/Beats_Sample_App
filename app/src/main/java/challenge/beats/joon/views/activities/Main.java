@@ -9,10 +9,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -20,9 +20,9 @@ import challenge.beats.joon.models.Album;
 import challenge.beats.joon.services.R;
 import challenge.beats.joon.services.SearchService;
 import challenge.beats.joon.views.fragments.MainFragment;
-import challenge.beats.joon.views.fragments.SearchViewFragment;
+import challenge.beats.joon.views.fragments.SearchResultsFragment;
 
-public class Main extends Activity implements SearchViewFragment.OnFragmentInteractionListener {
+public class Main extends Activity implements SearchResultsFragment.OnFragmentInteractionListener {
     // Logging
     private final String TAG = "Main";
 
@@ -44,10 +44,11 @@ public class Main extends Activity implements SearchViewFragment.OnFragmentInter
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new MainFragment())
                     .commit();
+        } else {
+            Log.i(TAG, "Saved instance wasn't null...");
         }
 
         doBindService();
-
         handleIntent(getIntent());
 
         mInstance = this;
@@ -83,9 +84,6 @@ public class Main extends Activity implements SearchViewFragment.OnFragmentInter
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -99,10 +97,10 @@ public class Main extends Activity implements SearchViewFragment.OnFragmentInter
     public void setAlbums(ArrayList<Album> result) {
 
         // set a new fragment
-        SearchViewFragment frag_search = new SearchViewFragment();
+        SearchResultsFragment frag_search = new SearchResultsFragment();
         frag_search.setAlbums(result);  // pass in the result to the adapter
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, frag_search);
+        transaction.replace(R.id.container, frag_search, "search");
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -149,9 +147,6 @@ public class Main extends Activity implements SearchViewFragment.OnFragmentInter
             // service that we know is running in our own process, we can
             // cast its IBinder to a concrete class and directly access it.
             mBoundService = ((SearchService.LocalBinder)service).getService();
-
-            // Tell the user about this for our demo.
-            Toast.makeText(getApplicationContext(), R.string.local_service_connected, Toast.LENGTH_SHORT).show();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -160,7 +155,6 @@ public class Main extends Activity implements SearchViewFragment.OnFragmentInter
             // Because it is running in our same process, we should never
             // see this happen.
             mBoundService = null;
-            Toast.makeText(getApplicationContext(), R.string.local_service_disconnected, Toast.LENGTH_SHORT).show();
         }
     };
 

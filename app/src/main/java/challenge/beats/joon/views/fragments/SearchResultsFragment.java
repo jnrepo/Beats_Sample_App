@@ -8,20 +8,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
-
-import challenge.beats.joon.models.adapters.ListAdapter;
 
 import java.util.ArrayList;
 
-import challenge.beats.joon.services.R;
 import challenge.beats.joon.models.Album;
+import challenge.beats.joon.models.adapters.AlbumAdapter;
+import challenge.beats.joon.services.R;
 
 /**
  * A fragment representing a list of Items.
  * interface.
  */
-public class SearchViewFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class SearchResultsFragment extends Fragment implements AbsListView.OnItemClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,8 +48,8 @@ public class SearchViewFragment extends Fragment implements AbsListView.OnItemCl
     private android.widget.ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static SearchViewFragment newInstance(String param1, String param2) {
-        SearchViewFragment fragment = new SearchViewFragment();
+    public static SearchResultsFragment newInstance(String param1, String param2) {
+        SearchResultsFragment fragment = new SearchResultsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,7 +61,7 @@ public class SearchViewFragment extends Fragment implements AbsListView.OnItemCl
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public SearchViewFragment() {
+    public SearchResultsFragment() {
     }
 
     @Override
@@ -74,7 +74,6 @@ public class SearchViewFragment extends Fragment implements AbsListView.OnItemCl
         }
 
         // TODO: Change Adapter to display your content
-        mAdapter = new ListAdapter(getActivity(), albums);
     }
 
     @Override
@@ -83,10 +82,10 @@ public class SearchViewFragment extends Fragment implements AbsListView.OnItemCl
         View view = inflater.inflate(R.layout.fragment_album_list, container, false);
 
         // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<android.widget.ListAdapter>) mListView).setAdapter(mAdapter);
 
-        // Set OnItemClickListener so we can be notified on item clicks
+        mAdapter = new AlbumAdapter(getActivity(), albums);
+        mListView = (AbsListView) view.findViewById(android.R.id.list);
+        ((AdapterView<ListAdapter>)mListView).setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
         return view;

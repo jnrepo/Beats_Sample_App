@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="challenge.beats.joon.views.fragments.SearchViewFragment">
+    tools:context="challenge.beats.joon.views.fragments.SearchResultsFragment">
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="#242424"/>
 
     <TextView
         android:id="@android:id/empty"
