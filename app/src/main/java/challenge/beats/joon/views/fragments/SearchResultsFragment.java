@@ -10,12 +10,14 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import challenge.beats.joon.models.Album;
 import challenge.beats.joon.models.adapters.AlbumAdapter;
 import challenge.beats.joon.services.R;
+import challenge.beats.joon.views.activities.Main;
 
 /**
  * A fragment representing a list of Items.
@@ -82,6 +84,9 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
         View view = inflater.inflate(R.layout.fragment_album_list, container, false);
 
         // Set the adapter
+        if (albums.size() == 0) {
+            Toast.makeText(Main.getInstance(), "Sorry, we couldn't find anything...", Toast.LENGTH_LONG).show();
+        }
 
         mAdapter = new AlbumAdapter(getActivity(), albums);
         mListView = (AbsListView) view.findViewById(android.R.id.list);
@@ -119,9 +124,7 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
     }
 
     /**
-     * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
+     * Sets the text if we don't have anything
      */
     public void setEmptyText(CharSequence emptyText) {
         View emptyView = mListView.getEmptyView();

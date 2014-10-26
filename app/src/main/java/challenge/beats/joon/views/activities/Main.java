@@ -24,7 +24,8 @@ import challenge.beats.joon.views.fragments.SearchResultsFragment;
 
 public class Main extends Activity implements SearchResultsFragment.OnFragmentInteractionListener {
     // Logging
-    private final String TAG = "Main";
+    private final static String TAG = "Main";
+    private final static String MAIN_FRAG = "Main";
 
     // Services
     private SearchService mBoundService;
@@ -42,14 +43,10 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
         // interviews
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainFragment())
+                    .add(R.id.container, new MainFragment(), MAIN_FRAG)
                     .commit();
         } else {
             Log.i(TAG, "Saved instance wasn't null...");
-            SearchResultsFragment saved = (SearchResultsFragment) getFragmentManager().findFragmentByTag("search");
-            if (saved != null) {
-
-            }
         }
 
         doBindService();
@@ -60,12 +57,26 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
         this.setAppContext(getApplicationContext());
     }
 
+    /**
+     * returns the singleton instance of the main activity
+     * @return
+     */
     public static Main getInstance(){
         return mInstance;
     }
+
+    /**
+     * returns the application context of the singleton main activity
+     * @return
+     */
     public static Context getAppContext() {
         return mAppContext;
     }
+
+    /**
+     * sets the variable mAppContext (for easy access) to main activity's singleton app context
+     * @param mAppContext
+     */
     public void setAppContext(Context mAppContext) {
         this.mAppContext = mAppContext;
     }
@@ -97,21 +108,34 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
         doUnbindService();
     }
 
-    // we should start the search fragment
+    /**
+     * displays a search fragment based on the results from the SearchService
+     * @param result (ArrayList<Album>): album results of the search service stored in an arraylist
+     */
     public void setAlbums(ArrayList<Album> result) {
 
         // set a new fragment
         SearchResultsFragment frag_search = new SearchResultsFragment();
         frag_search.setAlbums(result);  // pass in the result to the adapter
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, frag_search, "search");
-        transaction.addToBackStack(null);
+        transaction.replace(R.id.container, frag_search);
+
+        // check to see if we have main fragment
+        MainFragment frag_main = (MainFragment) getFragmentManager().findFragmentByTag(MAIN_FRAG);
+        if (frag_main.isVisible()) {
+            // add to the back stack
+            transaction.addToBackStack(null);
+        } else {
+            // its a search fragment, don't allow it into the backstack
+            transaction.disallowAddToBackStack();
+        }
+
         transaction.commit();
     }
 
     @Override
     public void onListItemClick(String id) {
-
+        // we do nothing for now
     }
 
     /* intent section */
