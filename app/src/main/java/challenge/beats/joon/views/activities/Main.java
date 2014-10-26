@@ -46,6 +46,10 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
                     .commit();
         } else {
             Log.i(TAG, "Saved instance wasn't null...");
+            SearchResultsFragment saved = (SearchResultsFragment) getFragmentManager().findFragmentByTag("search");
+            if (saved != null) {
+
+            }
         }
 
         doBindService();

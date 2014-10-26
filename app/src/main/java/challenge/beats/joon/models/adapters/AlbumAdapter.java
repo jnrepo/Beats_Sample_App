@@ -23,7 +23,7 @@ import challenge.beats.joon.services.VolleySingleton;
 public class AlbumAdapter extends BaseAdapter {
     // constant that dictates the size of titles
     private final int MAX_TITLE_LENGTH_LANDSCAPE = 75;
-    private final int MAX_TITLE_LENGTH_PORTRAIT = 50;
+    private final int MAX_TITLE_LENGTH_PORTRAIT = 45;
 
     private Activity activity;
     private ArrayList<Album> albums;
