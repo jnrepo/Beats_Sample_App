@@ -25,26 +25,11 @@ import challenge.beats.joon.views.activities.MainActivity;
 public class SearchResultsFragment extends Fragment implements AbsListView.OnItemClickListener {
 
     private ArrayList<Album> albums;
-
     private OnFragmentInteractionListener mListener;
-
-    /**
-     * The fragment's ListView/GridView.
-     */
     private AbsListView mListView;
-
-    /**
-     * The Adapter which will be used to populate the ListView/GridView with
-     * Views.
-     */
     private AlbumAdapter mAdapter;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public SearchResultsFragment() {
-    }
+    public SearchResultsFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

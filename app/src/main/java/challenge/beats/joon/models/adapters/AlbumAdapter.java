@@ -20,18 +20,19 @@ import challenge.beats.joon.models.Album;
 import challenge.beats.joon.services.R;
 import challenge.beats.joon.services.VolleySingleton;
 
+/**
+ * This adapter will take the album data (ArrayList<Album>) and populate the listview with the results from the server response.
+ */
 public class AlbumAdapter extends BaseAdapter {
+    private static LayoutInflater inflater = null;
     // constant that dictates the size of titles
     private final int MAX_TITLE_LENGTH_LANDSCAPE = 75;
     private final int MAX_TITLE_LENGTH_PORTRAIT = 45;
-
     private Activity activity;
     private ArrayList<Album> albums;
-    private static LayoutInflater inflater = null;
-
-    // Singleton for image loading
+    // Singleton
     private ImageLoader imageLoader = VolleySingleton.getInstance().getImageLoader();
-    
+
     public AlbumAdapter(Activity targetActivity, ArrayList<Album> albums) {
         this.activity = targetActivity;
         this.albums = albums;
@@ -58,7 +59,7 @@ public class AlbumAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View vi = convertView;
 
-        if(convertView == null)
+        if (convertView == null)
             vi = inflater.inflate(R.layout.item_album, null);
 
         Album album = albums.get(position);
@@ -77,9 +78,7 @@ public class AlbumAdapter extends BaseAdapter {
     }
 
     /**
-     * If the title's longer than 'MAX_TITLE_LENGTH_LANDSCAPE' characters (up to dev's discretion), we truncate the title for aesthetics
-     *
-     * TODO, truncate differently for portrait orientation?, maybe by the difference in ratio of width vs height
+     * If the title's longer than 'MAX_TITLE_LENGTH_LANDSCAPE' or 'MAX_TITLE_LENGTH_PORTRAIT' (depending on orientation) characters (up to dev's discretion), we truncate the title for aesthetics
      *
      * @param title (String): the title of the album
      * @return (String): either the original title, or truncated title
@@ -96,6 +95,7 @@ public class AlbumAdapter extends BaseAdapter {
                 StringBuilder nTitle = new StringBuilder(title.substring(0, MAX_TITLE_LENGTH_LANDSCAPE)).append("...");
                 return nTitle.toString();
             }
+        // portrait
         } else {
             if (title.toCharArray().length > MAX_TITLE_LENGTH_PORTRAIT) {
                 StringBuilder nTitle = new StringBuilder(title.substring(0, MAX_TITLE_LENGTH_PORTRAIT)).append("...");

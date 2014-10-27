@@ -1,8 +1,5 @@
 package challenge.beats.joon.services;
 
-import android.graphics.Bitmap;
-import android.util.LruCache;
-
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
@@ -19,18 +16,7 @@ public class VolleySingleton {
 
     private VolleySingleton() {
         mRequestQueue = Volley.newRequestQueue(MainActivity.getAppContext());
-        mImageLoader = new ImageLoader(this.mRequestQueue, new ImageLoader.ImageCache() {
-            private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(20);
-
-            public void putBitmap(String url, Bitmap bitmap) {
-                mCache.put(url, bitmap);
-            }
-
-            public Bitmap getBitmap(String url) {
-                return mCache.get(url);
-            }
-        });
-
+        mImageLoader = new ImageLoader(this.mRequestQueue, new BitmapLruCache());
     }
 
     public static VolleySingleton getInstance() {

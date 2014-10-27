@@ -53,6 +53,7 @@ public class SearchService extends Service {
      * @param album (String): search query containing an album title
      */
     public void searchByAlbum(final String album) {
+        // replace spaces with '+'
         String query = album.trim().replace(' ', '+');
         final ArrayList<Album> result = new ArrayList<Album>();
         StringBuilder url = new StringBuilder(SEARCH_BASE_URL)
@@ -119,13 +120,9 @@ public class SearchService extends Service {
 
     /**
      * Custom error listener
-     * <p/>
-     * should return
-     * - what the input was
-     * - what is wrong
      *
-     * @param methodName (String): type of search we failed on
-     * @return
+     * @param methodName (String): what were calling when we failed
+     * @return : an error response
      */
     private Response.ErrorListener ErrorListener(final String methodName) {
         return new Response.ErrorListener() {

@@ -9,17 +9,16 @@ import android.view.ViewGroup;
 import challenge.beats.joon.services.R;
 
 /**
- * Created by Joon on 10/24/2014.
+ * View for the welcome screen
  */
 public class WelcomeScreenFragment extends Fragment {
-    public WelcomeScreenFragment() {
-    }
+    public WelcomeScreenFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_welcome, container, false);
-        return rootView;
+        View view = inflater.inflate(R.layout.fragment_welcome, container, false);
+        return view;
     }
 
 }
