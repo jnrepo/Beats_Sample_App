@@ -19,20 +19,20 @@ import java.util.ArrayList;
 import challenge.beats.joon.models.Album;
 import challenge.beats.joon.services.R;
 import challenge.beats.joon.services.SearchService;
-import challenge.beats.joon.views.fragments.MainFragment;
+import challenge.beats.joon.views.fragments.WelcomeScreenFragment;
 import challenge.beats.joon.views.fragments.SearchResultsFragment;
 
-public class Main extends Activity implements SearchResultsFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements SearchResultsFragment.OnFragmentInteractionListener {
     // Logging
-    private final static String TAG = "Main";
-    private final static String MAIN_FRAG = "Main";
+    private final static String TAG = "MainActivity";
+    private final static String MAIN_FRAG = "MainActivity";
 
     // Services
     private SearchService mBoundService;
     private boolean mIsBound = false;
 
     // Singleton-related
-    private static Main mInstance;
+    private static MainActivity mInstance;
     private static Context mAppContext;
 
     @Override
@@ -43,7 +43,7 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
         // interviews
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainFragment(), MAIN_FRAG)
+                    .add(R.id.container, new WelcomeScreenFragment(), MAIN_FRAG)
                     .commit();
         } else {
             Log.i(TAG, "Saved instance wasn't null...");
@@ -61,7 +61,7 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
      * returns the singleton instance of the main activity
      * @return
      */
-    public static Main getInstance(){
+    public static MainActivity getInstance(){
         return mInstance;
     }
 
@@ -95,7 +95,7 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar item_album clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
@@ -116,12 +116,12 @@ public class Main extends Activity implements SearchResultsFragment.OnFragmentIn
 
         // set a new fragment
         SearchResultsFragment frag_search = new SearchResultsFragment();
-        frag_search.setAlbums(result);  // pass in the result to the adapter
+        frag_search.setAlbums(result);  //'[ pass in the result to the adapter
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.container, frag_search);
 
         // check to see if we have main fragment
-        MainFragment frag_main = (MainFragment) getFragmentManager().findFragmentByTag(MAIN_FRAG);
+        WelcomeScreenFragment frag_main = (WelcomeScreenFragment) getFragmentManager().findFragmentByTag(MAIN_FRAG);
         if (frag_main.isVisible()) {
             // add to the back stack
             transaction.addToBackStack(null);

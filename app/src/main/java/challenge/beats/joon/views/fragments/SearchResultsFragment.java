@@ -17,24 +17,14 @@ import java.util.ArrayList;
 import challenge.beats.joon.models.Album;
 import challenge.beats.joon.models.adapters.AlbumAdapter;
 import challenge.beats.joon.services.R;
-import challenge.beats.joon.views.activities.Main;
+import challenge.beats.joon.views.activities.MainActivity;
 
 /**
- * A fragment representing a list of Items.
- * interface.
+ * View that displays the list of albums.
  */
 public class SearchResultsFragment extends Fragment implements AbsListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private ArrayList<Album> albums;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -47,17 +37,7 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private android.widget.ListAdapter mAdapter;
-
-    // TODO: Rename and change types of parameters
-    public static SearchResultsFragment newInstance(String param1, String param2) {
-        SearchResultsFragment fragment = new SearchResultsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private AlbumAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,23 +49,17 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        // TODO: Change Adapter to display your content
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_album_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         // Set the adapter
         if (albums.size() == 0) {
-            Toast.makeText(Main.getInstance(), "Sorry, we couldn't find anything...", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.getInstance(), "Sorry, we couldn't find anything...", Toast.LENGTH_LONG).show();
+            return view;
         }
 
         mAdapter = new AlbumAdapter(getActivity(), albums);
@@ -118,7 +92,7 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
+            // fragment is attached to one) that an item_album has been selected.
             mListener.onListItemClick(String.valueOf(position));
         }
     }
@@ -145,7 +119,6 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
     * >Communicating with Other Fragments</a> for more information.
     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onListItemClick(String id);
     }
 

@@ -59,7 +59,7 @@ public class AlbumAdapter extends BaseAdapter {
         View vi = convertView;
 
         if(convertView == null)
-            vi = inflater.inflate(R.layout.item, null);
+            vi = inflater.inflate(R.layout.item_album, null);
 
         Album album = albums.get(position);
 

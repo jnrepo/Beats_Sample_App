@@ -6,17 +6,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Models an album class and holds all relevant data
+ * Model of Album
  *
- * Created by Joon on 10/24/2014.
+ * Stores information about an Album we retrieve from the BeatsAPI server response
+ * - album id
+ * - result type
+ * - detail
+ * - display
+ * - type
+ * - related
+ * - album art url
  */
 public class Album {
     private static final String TAG = "ALBUM";
     private String id, result_type, detail, display, type, url;
     public JSONObject related;
 
+    // constructor parses data from a JSONObject
     public Album(JSONObject j) {
-
         try {
             this.id = j.getString("id");
             this.result_type = j.getString("result_type");

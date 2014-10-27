@@ -11,14 +11,14 @@ import challenge.beats.joon.services.R;
 /**
  * Created by Joon on 10/24/2014.
  */
-public class MainFragment extends Fragment {
-    public MainFragment() {
+public class WelcomeScreenFragment extends Fragment {
+    public WelcomeScreenFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_welcome, container, false);
         return rootView;
     }
 

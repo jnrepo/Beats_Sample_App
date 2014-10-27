@@ -19,28 +19,25 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import challenge.beats.joon.models.Album;
-import challenge.beats.joon.views.activities.Main;
+import challenge.beats.joon.views.activities.MainActivity;
 
 /**
- * Created by Joon on 10/24/2014.
+ * This service communicates with the BeatsAPI, parses the information and relays the parsed response to MainActivity.
  */
 public class SearchService extends Service {
-    // logging
     private final String TAG = "SearchService";
 
-    // TODO create url factory builder, later
-    private final String SEARCH_BASE_URL = "https://partner.api.beatsmusic.com/v1/api/search?";
-    private final String ALBUM_ART_BASE = "https://partner.api.beatsmusic.com/v1/api/albums/";
-    private final String ALBUM_IMAGE = "/images/default";
+    private final static String SEARCH_BASE_URL = "https://partner.api.beatsmusic.com/v1/api/search?";
+    private final static String ALBUM_ART_BASE = "https://partner.api.beatsmusic.com/v1/api/albums/";
+    private final static String ALBUM_IMAGE = "/images/default";
 
-    // json request object
     private JsonObjectRequest mReq;
 
     // singletons
     private RequestQueue queue = VolleySingleton.getInstance().getRequestQueue();
-    private Main main = Main.getInstance();
+    private MainActivity main = MainActivity.getInstance();
 
-    public SearchService(){}
+    public SearchService() {}
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -51,106 +48,66 @@ public class SearchService extends Service {
     }
 
     /**
-     * Makes a call to the Beats SearchAPI, then stores results and tells the main activity it is done
+     * Makes a call to the Beats SearchAPI, then parses the response and stores albums into an ArrayList<Album>.
      *
      * @param album (String): search query containing an album title
      */
     public void searchByAlbum(final String album) {
-        String query = album.trim().replace(' ','+');
+        String query = album.trim().replace(' ', '+');
         final ArrayList<Album> result = new ArrayList<Album>();
         StringBuilder url = new StringBuilder(SEARCH_BASE_URL)
                 .append("q=")
                 .append(query)
-                .append("&type=album");
-        appendKey(url);
-
-        Log.d(TAG, "[ALBUM] query url: " + url.toString());
+                .append("&type=album")
+                .append("&client_id=")
+                .append("qtv3jd27hk45ymsmhhfsbc9q");
 
         // make the call
-        mReq =  new JsonObjectRequest(Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
+        mReq = new JsonObjectRequest(Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
 
             @Override
             public void
             onResponse(JSONObject response) {
-            Log.i(TAG, "Parsing ALBUM search response...");
+                Log.i(TAG, "Parsing ALBUM search response...");
 
-            try {
-                // get data node
-                if (response.has("data")) {
-                    JSONArray albums_json = response.getJSONArray("data");
-                    Log.i(TAG, "albums: " + albums_json);
+                try {
+                    // get data node
+                    if (response.has("data")) {
+                        JSONArray albums_json = response.getJSONArray("data");
+                        Log.i(TAG, "albums: " + albums_json);
 
-                    // unroll!
-                    for(int i = 0; i < albums_json.length(); i+=5) {
-                        createAlbum(result, albums_json, i);
-                        createAlbum(result, albums_json, i + 1);
-                        createAlbum(result, albums_json, i + 2);
-                        createAlbum(result, albums_json, i + 3);
-                        createAlbum(result, albums_json, i + 4);
+                        // get the albums and place into results
+                        for (int i = 0; i < albums_json.length(); i++) {
+                            result.add(new Album(albums_json.getJSONObject(i)));
+                        }
+
+                        // get the album art urls
+                        for (int x = 0; x < result.size(); x++) {
+                            StringBuilder url = new StringBuilder(ALBUM_ART_BASE)
+                                    .append(result.get(x).getId())
+                                    .append(ALBUM_IMAGE)
+                                    .append("?client_id=")
+                                    .append("qtv3jd27hk45ymsmhhfsbc9q");
+                            result.get(x).setAlbumArtUrl(url.toString());
+                        }
+
+                        main.setAlbums(result);
                     }
 
-                    // unroll the loop
-                    for(int x = 0; x < result.size(); x+=5) {
-                        getAlbumArt(result, x);
-                        getAlbumArt(result, x + 1);
-                        getAlbumArt(result, x + 2);
-                        getAlbumArt(result, x + 3);
-                        getAlbumArt(result, x + 4);
-                    }
-
-                    main.setAlbums(result);
+                } catch (JSONException e) {
+                    Log.e(TAG, "[error] Something was wrong with the JSONObject...");
+                    e.printStackTrace();
+                    // fire a toast telling there was an error
                 }
-
-            } catch (JSONException e) {
-                Log.e(TAG, "[error] Something was wrong with the JSONObject...");
-                e.printStackTrace();
-                // fire a toast telling there was an error
             }
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "There was an error searching for an album");
-            }
-        });
+        }, ErrorListener("album"));
 
         queue.add(mReq);
     }
 
     /**
-     * Makes a call to the SearchAPI with the album id, obtain album art url
-     *
-     * - Call Format: https://partner.api.beatsmusic.com/v1/api/albums/al74961607/images/default?client_id=[CLIENT_ID]
-     *                https://partner.api.beatsmusic.com/v1/api/albums/al1001393/images/default?client_id=qtv3jd27hk45ymsmhhfsbc9q
-     *
-     * @param a: list of albums we're looking through
-     * @param index (int): index of the album we want to access in the album list
-     */
-    public void getAlbumArt(final ArrayList<Album> a, final int index) {
-        // check to see we don't call an element that's outOfBounds
-        if (index < a.size()) {
-            final Album content = a.get(index);
-            StringBuilder url = new StringBuilder(ALBUM_ART_BASE)
-                                    .append(content.getId())
-                                    .append(ALBUM_IMAGE).append("?client_id=").append("qtv3jd27hk45ymsmhhfsbc9q");
-
-            Log.i(TAG, "Request URL for album art: " + url);
-            content.setAlbumArtUrl(url.toString());
-
-        }
-    }
-
-    public void createAlbum(ArrayList<Album> album_result, JSONArray album_response, int index) throws JSONException {
-        // check to see we don't call an element that's outOfBounds
-        if (index < album_response.length()) {
-            album_result.add(new Album(album_response.getJSONObject(index)));
-        }
-    }
-
-    /**
      * Appends the client key to the passed in StringBuilder object.
-     *
+     * <p/>
      * **Future, move to url builder class
      *
      * @param s (StringBuilder): string builder we are appending the client id to
@@ -162,10 +119,10 @@ public class SearchService extends Service {
 
     /**
      * Custom error listener
-     *
+     * <p/>
      * should return
-     *  - what the input was
-     *  - what is wrong
+     * - what the input was
+     * - what is wrong
      *
      * @param methodName (String): type of search we failed on
      * @return
@@ -176,7 +133,6 @@ public class SearchService extends Service {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "[Error] call failed, while searching for" + methodName);
-
             }
         };
     }
