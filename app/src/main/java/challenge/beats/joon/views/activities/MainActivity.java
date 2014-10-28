@@ -25,7 +25,7 @@ import challenge.beats.joon.views.fragments.WelcomeScreenFragment;
 public class MainActivity extends Activity implements SearchResultsFragment.OnFragmentInteractionListener {
     // Logging
     private final static String TAG = "MainActivity";
-    private final static String MAIN_FRAG = "MainActivity";
+    private final static String SEARCH_FRAG = "SearchResultsFragment";
 
     // Services
     private SearchService mBoundService;
@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements SearchResultsFragment.OnFr
         // interviews
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new WelcomeScreenFragment(), MAIN_FRAG)
+                    .add(R.id.container, new WelcomeScreenFragment())
                     .commit();
         } else {
             Log.i(TAG, "Saved instance wasn't null...");
@@ -117,22 +117,20 @@ public class MainActivity extends Activity implements SearchResultsFragment.OnFr
     public void setAlbums(ArrayList<Album> result) {
         boolean shouldStack = true;
         // set a new fragment
-        frag_search = (SearchResultsFragment) getFragmentManager().findFragmentByTag("search");
+        frag_search = (SearchResultsFragment) getFragmentManager().findFragmentByTag(SEARCH_FRAG);
         if (frag_search == null) {
             // it didn't exist, so we make one
             frag_search = new SearchResultsFragment();
-            Log.i(TAG, "create new frag ---------------------- see ---------");
         } else {
             // we don't stack if it exists
             shouldStack = false;
         }
 
-        frag_search.setAlbums(result);  //'[ pass in the result to the adapter
+        frag_search.setAlbums(result);  // pass in the result to the adapter
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, frag_search, "search");
+        transaction.replace(R.id.container, frag_search, SEARCH_FRAG);
 
         // check to see if we have main fragment
-        WelcomeScreenFragment frag_main = (WelcomeScreenFragment) getFragmentManager().findFragmentByTag(MAIN_FRAG);
         if (shouldStack) {
             // add to the back stack
             transaction.addToBackStack(null);

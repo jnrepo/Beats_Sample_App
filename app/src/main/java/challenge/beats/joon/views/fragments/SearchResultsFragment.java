@@ -112,18 +112,21 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
     }
 
     public void setAlbums(ArrayList<Album> a) {
-        this.albums = a;
-        if (!first) {
-            mAdapter.clear();
-            mAdapter.setAlbums(albums);
-            if (albums.size() == 0) {
-                emptyText.setVisibility(View.VISIBLE);
-                emptyText.setText("Sorry, we couldn't find anything...");
-            } else {
-                emptyText.setVisibility(View.INVISIBLE);
-            }
-            mAdapter.notifyDataSetChanged();
+        if (first) {
+            this.albums = a;
+            return;
         }
+        this.albums = a;
+        mAdapter.clear();
+        mAdapter.setAlbums(albums);
+        if (albums.size() == 0) {
+            emptyText.setVisibility(View.VISIBLE);
+            emptyText.setText("Sorry, we couldn't find anything...");
+        } else {
+            emptyText.setVisibility(View.INVISIBLE);
+            mListView.smoothScrollToPosition(0);
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
 }
