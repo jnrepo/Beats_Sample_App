@@ -26,6 +26,8 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
     private OnFragmentInteractionListener mListener;
     private AbsListView mListView;
     private AlbumAdapter mAdapter;
+    private TextView emptyText;
+    private boolean first = true;
 
     public SearchResultsFragment() {}
 
@@ -37,8 +39,9 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        first = false;
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        TextView emptyText = (TextView) view.findViewById(android.R.id.empty);
+        emptyText = (TextView) view.findViewById(android.R.id.empty);
 
         // Set the adapter
         if (albums.size() == 0) {
@@ -110,6 +113,17 @@ public class SearchResultsFragment extends Fragment implements AbsListView.OnIte
 
     public void setAlbums(ArrayList<Album> a) {
         this.albums = a;
+        if (!first) {
+            mAdapter.clear();
+            mAdapter.setAlbums(albums);
+            if (albums.size() == 0) {
+                emptyText.setVisibility(View.VISIBLE);
+                emptyText.setText("Sorry, we couldn't find anything...");
+            } else {
+                emptyText.setVisibility(View.INVISIBLE);
+            }
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
 }

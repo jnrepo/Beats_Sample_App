@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import challenge.beats.joon.models.Album;
 import challenge.beats.joon.services.R;
 import challenge.beats.joon.services.SearchService;
-import challenge.beats.joon.views.fragments.WelcomeScreenFragment;
 import challenge.beats.joon.views.fragments.SearchResultsFragment;
+import challenge.beats.joon.views.fragments.WelcomeScreenFragment;
 
 public class MainActivity extends Activity implements SearchResultsFragment.OnFragmentInteractionListener {
     // Logging
@@ -34,6 +34,8 @@ public class MainActivity extends Activity implements SearchResultsFragment.OnFr
     // Singleton-related
     private static MainActivity mInstance;
     private static Context mAppContext;
+
+    private SearchResultsFragment frag_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,21 +115,27 @@ public class MainActivity extends Activity implements SearchResultsFragment.OnFr
      * @param result (ArrayList<Album>): album results of the search service stored in an arraylist
      */
     public void setAlbums(ArrayList<Album> result) {
-
+        boolean shouldStack = true;
         // set a new fragment
-        SearchResultsFragment frag_search = new SearchResultsFragment();
+        frag_search = (SearchResultsFragment) getFragmentManager().findFragmentByTag("search");
+        if (frag_search == null) {
+            // it didn't exist, so we make one
+            frag_search = new SearchResultsFragment();
+            Log.i(TAG, "create new frag ---------------------- see ---------");
+        } else {
+            // we don't stack if it exists
+            shouldStack = false;
+        }
+
         frag_search.setAlbums(result);  //'[ pass in the result to the adapter
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, frag_search);
+        transaction.replace(R.id.container, frag_search, "search");
 
         // check to see if we have main fragment
         WelcomeScreenFragment frag_main = (WelcomeScreenFragment) getFragmentManager().findFragmentByTag(MAIN_FRAG);
-        if (frag_main.isVisible()) {
+        if (shouldStack) {
             // add to the back stack
             transaction.addToBackStack(null);
-        } else {
-            // its a search fragment, don't allow it into the backstack
-            transaction.disallowAddToBackStack();
         }
 
         transaction.commit();

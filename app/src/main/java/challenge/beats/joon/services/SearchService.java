@@ -10,12 +10,14 @@ import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import challenge.beats.joon.models.Album;
@@ -31,11 +33,15 @@ public class SearchService extends Service {
     private final static String ALBUM_ART_BASE = "https://partner.api.beatsmusic.com/v1/api/albums/";
     private final static String ALBUM_IMAGE = "/images/default";
 
-    private JsonObjectRequest mReq;
+    private StringRequest msReq;
 
     // singletons
     private RequestQueue queue = VolleySingleton.getInstance().getRequestQueue();
     private MainActivity main = MainActivity.getInstance();
+
+    private GsonBuilder gsonBuilder = new GsonBuilder();
+    private Gson gson = gsonBuilder.create();
+    private JsonParser parser = new JsonParser();
 
     public SearchService() {}
 
@@ -64,46 +70,34 @@ public class SearchService extends Service {
                 .append("qtv3jd27hk45ymsmhhfsbc9q");
 
         // make the call
-        mReq = new JsonObjectRequest(Method.GET, url.toString(), null, new Response.Listener<JSONObject>() {
+        msReq = new StringRequest(Method.GET, url.toString(), new Response.Listener<String>() {
 
             @Override
             public void
-            onResponse(JSONObject response) {
-                Log.i(TAG, "Parsing ALBUM search response...");
+            onResponse(String response) {
+            Log.i(TAG, "Parsing ALBUM search response...");
 
-                try {
-                    // get data node
-                    if (response.has("data")) {
-                        JSONArray albums_json = response.getJSONArray("data");
-                        Log.i(TAG, "albums: " + albums_json);
+            // get data node
+            JsonObject albums_json = parser.parse(response).getAsJsonObject();
+            Type listType = new TypeToken<ArrayList<Album>>() {}.getType();
+            ArrayList<Album> result = new Gson().fromJson(albums_json.get("data"), listType);
 
-                        // get the albums and place into results
-                        for (int i = 0; i < albums_json.length(); i++) {
-                            result.add(new Album(albums_json.getJSONObject(i)));
-                        }
+            // get the album art urls
+            for (int x = 0; x < result.size(); x++) {
+                StringBuilder url = new StringBuilder(ALBUM_ART_BASE)
+                        .append(result.get(x).getId())
+                        .append(ALBUM_IMAGE)
+                        .append("?client_id=")
+                        .append("qtv3jd27hk45ymsmhhfsbc9q");
+                result.get(x).setAlbumArtUrl(url.toString());
+            }
 
-                        // get the album art urls
-                        for (int x = 0; x < result.size(); x++) {
-                            StringBuilder url = new StringBuilder(ALBUM_ART_BASE)
-                                    .append(result.get(x).getId())
-                                    .append(ALBUM_IMAGE)
-                                    .append("?client_id=")
-                                    .append("qtv3jd27hk45ymsmhhfsbc9q");
-                            result.get(x).setAlbumArtUrl(url.toString());
-                        }
+            main.setAlbums(result);
 
-                        main.setAlbums(result);
-                    }
-
-                } catch (JSONException e) {
-                    Log.e(TAG, "[error] Something was wrong with the JSONObject...");
-                    e.printStackTrace();
-                    // fire a toast telling there was an error
-                }
             }
         }, ErrorListener("album"));
 
-        queue.add(mReq);
+        queue.add(msReq);
     }
 
     /**

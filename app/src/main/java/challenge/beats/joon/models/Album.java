@@ -1,9 +1,7 @@
 package challenge.beats.joon.models;
 
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Model of Album
@@ -18,36 +16,30 @@ import org.json.JSONObject;
  * - album art url
  */
 public class Album {
-    private static final String TAG = "ALBUM";
-    private String id, result_type, detail, display, type, url;
-    public JSONObject related;
+    private String url;
 
-    // constructor parses data from a JSONObject
-    public Album(JSONObject j) {
-        try {
-            this.id = j.getString("id");
-            this.result_type = j.getString("result_type");
-            this.detail = j.getString("detail");
-            this.display = j.getString("display");
-            this.type = j.getString("type");
-            this.related = j.getJSONObject("related");
-        } catch (JSONException e) {
-            Log.e(TAG, "[Error] while reading JSON object to create album");
-            e.printStackTrace();
-        }
-    }
+    @SerializedName("id")
+    private String id;
 
-    public Album(String id, String result_type, String detail, String display, String type, JSONObject related) {
-        this.id = id;
-        this.result_type = result_type;
-        this.detail = detail;
-        this.display = display;
-        this.type = type;
-        this.related = related;
-    }
+    @SerializedName("result_type")
+    private String result_type;
+
+    @SerializedName("detail")
+    private String detail;
+
+    @SerializedName("display")
+    private String display;
+
+    @SerializedName("type")
+    private String type;
+
+    @SerializedName("related")
+    private JsonObject related;
+
+    public Album() {}
 
     public void setAlbumArtUrl(String url) {
-      this.url = url;
+        this.url = url;
     }
     public String getAlbumArtUrl() {return url;}
     public String getId() {return id;}

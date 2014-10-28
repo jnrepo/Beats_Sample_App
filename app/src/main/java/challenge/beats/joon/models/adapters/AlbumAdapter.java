@@ -105,4 +105,13 @@ public class AlbumAdapter extends BaseAdapter {
         return title;
     }
 
+    public void clear() {
+        albums.clear();
+    }
+
+    public void setAlbums(ArrayList<Album> a) {
+        this.albums = a;
+    }
+
+
 }
