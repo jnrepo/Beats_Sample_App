@@ -18,7 +18,7 @@ import challenge.beats.joon.models.adapters.AlbumAdapter;
 import challenge.beats.joon.services.R;
 
 /**
- * View that displays the list of albums.
+ * View that displays a list of albums and also contains click listeners that will communicate back to the main activity.
  */
 public class SearchResultsFragment extends Fragment implements AbsListView.OnItemClickListener {
 
