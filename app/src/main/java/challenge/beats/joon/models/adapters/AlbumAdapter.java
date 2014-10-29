@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -72,7 +73,12 @@ public class AlbumAdapter extends BaseAdapter {
         // set the views
         title.setText(truncateTitle(album.getTitle()));
         artist.setText(album.getArtist());
-        image.setImageUrl(album.getAlbumArtUrl(), imageLoader);
+//        image.setImageUrl(album.getAlbumArtUrl(), imageLoader);
+
+        Picasso.with(activity.getApplicationContext())
+                .load(album.getAlbumArtUrl())
+                .noFade()
+                .into(image);
 
         return vi;
     }
