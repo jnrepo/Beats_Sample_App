@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class AlbumAdapter extends BaseAdapter {
         // get the views
         TextView title = (TextView) vi.findViewById(R.id.title);
         TextView artist = (TextView) vi.findViewById(R.id.artist);
-        NetworkImageView image = (NetworkImageView) vi.findViewById(R.id.image);
+        ImageView image = (ImageView) vi.findViewById(R.id.image);
 
         // set the views
         title.setText(truncateTitle(album.getTitle()));
